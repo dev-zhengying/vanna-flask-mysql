@@ -18,12 +18,12 @@ cache = MemoryCache()
 from vanna.remote import VannaDefault
 vn = VannaDefault(model=os.environ['VANNA_MODEL'], api_key=os.environ['VANNA_API_KEY'])
 
-vn.connect_to_snowflake(
-    account=os.environ['SNOWFLAKE_ACCOUNT'],
-    username=os.environ['SNOWFLAKE_USERNAME'],
-    password=os.environ['SNOWFLAKE_PASSWORD'],
-    database=os.environ['SNOWFLAKE_DATABASE'],
-    warehouse=os.environ['SNOWFLAKE_WAREHOUSE'],
+vn.connect_to_mysql(
+    host='mysql',
+    dbname='example',
+    user='example',
+    password='example',
+    port=3306,
 )
 
 # NO NEED TO CHANGE ANYTHING BELOW THIS LINE
@@ -65,7 +65,7 @@ def generate_sql():
         return jsonify({"type": "error", "error": "No question provided"})
 
     id = cache.generate_id(question=question)
-    sql = vn.generate_sql(question=question)
+    sql = vn.generate_sql(question=question, allow_llm_to_see_data=True)
 
     cache.set(id=id, field='question', value=question)
     cache.set(id=id, field='sql', value=sql)
